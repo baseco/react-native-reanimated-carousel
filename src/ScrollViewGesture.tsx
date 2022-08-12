@@ -94,6 +94,15 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
             'worklet';
             const origin = translation.value;
             const velocity = scrollEndVelocity.value;
+
+            if (Math.abs(origin) < 50) {
+                translation.value = withDecay({
+                    velocity,
+                    deceleration: 0.999,
+                });
+                return;
+            }
+
             if (!pagingEnabled) {
                 /**
                  * If enabled, releasing the touch will scroll to the nearest item.
@@ -113,7 +122,7 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
                 return;
             }
 
-            const direction = -(scrollEndTranslation.value >= 0 ? 1 : -1);
+            const direction = -(scrollEndTranslation.value > 0 ? 1 : -1);
             const computed = direction < 0 ? Math.ceil : Math.floor;
             const page = computed(-translation.value / size);
             let finalPage = page + direction;
