@@ -153,13 +153,11 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
             const origin = translation.value;
             const velocity = scrollEndVelocity.value;
 
-            if (Math.abs(origin) < 50) {
-                translation.value = withDecay({
-                    velocity,
-                    deceleration: 0.999,
-                });
-
-                resetBoundary();
+            const direction = -(scrollEndTranslation.value > 0 ? 1 : -1);
+            const computed = direction < 0 ? Math.ceil : Math.floor;
+            const page = computed(-translation.value / size);
+            if (Math.abs(scrollEndTranslation.value) < 100) {
+                translation.value = _withSpring(page, onFinished);
                 return;
             }
 
@@ -182,9 +180,6 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
                 return;
             }
 
-            const direction = -(scrollEndTranslation.value > 0 ? 1 : -1);
-            const computed = direction < 0 ? Math.ceil : Math.floor;
-            const page = computed(-translation.value / size);
             let finalPage = page + direction;
 
             if (!infinite) {
