@@ -95,7 +95,10 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
             const origin = translation.value;
             const velocity = scrollEndVelocity.value;
 
-            if (Math.abs(origin) < 75 && Math.abs(velocity) < 500) {
+            if (
+                Math.abs(scrollEndTranslation.value) < 75 &&
+                Math.abs(velocity) < 500
+            ) {
                 translation.value = _withSpring(
                     Math.round(origin / size) * size,
                     onFinished
