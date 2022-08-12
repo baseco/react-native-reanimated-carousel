@@ -89,6 +89,63 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
         [scrollAnimationDuration, withAnimation]
     );
 
+    const endWithSpring = React.useCallback(
+        (onFinished?: () => void) => {
+            'worklet';
+            const origin = translation.value;
+            const velocity = scrollEndVelocity.value;
+
+            if (Math.abs(origin) < 75) {
+                translation.value = translation.value = _withSpring(
+                    Math.round(origin / size) * size,
+                    onFinished
+                );
+                return;
+            }
+
+            if (!pagingEnabled) {
+                /**
+                 * If enabled, releasing the touch will scroll to the nearest item.
+                 * valid when pagingEnabled=false
+                 */
+                if (snapEnabled) {
+                    const nextPage =
+                        Math.round((origin + velocity * 0.4) / size) * size;
+
+                    translation.value = _withSpring(nextPage, onFinished);
+                    return;
+                }
+                translation.value = withDecay({
+                    velocity,
+                    deceleration: 0.999,
+                });
+                return;
+            }
+
+            const direction = -(scrollEndTranslation.value > 0 ? 1 : -1);
+            const computed = direction < 0 ? Math.ceil : Math.floor;
+            const page = computed(-translation.value / size);
+            let finalPage = page + direction;
+
+            if (!infinite) {
+                finalPage = Math.min(maxPage - 1, Math.max(0, finalPage));
+            }
+
+            translation.value = _withSpring(-finalPage * size, onFinished);
+        },
+        [
+            translation,
+            scrollEndVelocity.value,
+            pagingEnabled,
+            size,
+            scrollEndTranslation.value,
+            infinite,
+            _withSpring,
+            snapEnabled,
+            maxPage,
+        ]
+    );
+
     const onFinish = React.useCallback(
         (isFinished: boolean) => {
             'worklet';
@@ -146,61 +203,6 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
         activeDecay,
         _withSpring,
     ]);
-
-    const endWithSpring = React.useCallback(
-        (onFinished?: () => void) => {
-            'worklet';
-            const origin = translation.value;
-            const velocity = scrollEndVelocity.value;
-
-            const direction = -(scrollEndTranslation.value > 0 ? 1 : -1);
-            const computed = direction < 0 ? Math.ceil : Math.floor;
-            const page = computed(-translation.value / size);
-            if (Math.abs(scrollEndTranslation.value) < 100) {
-                translation.value = _withSpring(page, onFinished);
-                return;
-            }
-
-            if (!pagingEnabled) {
-                /**
-                 * If enabled, releasing the touch will scroll to the nearest item.
-                 * valid when pagingEnabled=false
-                 */
-                if (snapEnabled) {
-                    const nextPage =
-                        Math.round((origin + velocity * 0.4) / size) * size;
-
-                    translation.value = _withSpring(nextPage, onFinished);
-                    return;
-                }
-                translation.value = withDecay({
-                    velocity,
-                    deceleration: 0.999,
-                });
-                return;
-            }
-
-            let finalPage = page + direction;
-
-            if (!infinite) {
-                finalPage = Math.min(maxPage - 1, Math.max(0, finalPage));
-            }
-
-            translation.value = _withSpring(-finalPage * size, onFinished);
-        },
-        [
-            translation,
-            scrollEndVelocity.value,
-            pagingEnabled,
-            size,
-            scrollEndTranslation.value,
-            infinite,
-            _withSpring,
-            snapEnabled,
-            maxPage,
-            resetBoundary,
-        ]
-    );
 
     useAnimatedReaction(
         () => translation.value,
