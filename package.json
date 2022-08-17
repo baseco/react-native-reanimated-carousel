@@ -130,25 +130,6 @@
             }
         }
     },
-    "react-native-builder-bob": {
-        "source": "src",
-        "output": "lib",
-        "targets": [
-            [
-                "commonjs",
-                {
-                    "configFile": "./babel.config.js"
-                }
-            ],
-            "module",
-            [
-                "typescript",
-                {
-                    "project": "tsconfig.build.json"
-                }
-            ]
-        ]
-    },
     "config": {
         "commitizen": {
             "path": "./node_modules/cz-conventional-changelog"
