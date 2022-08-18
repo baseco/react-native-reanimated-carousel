@@ -26,7 +26,6 @@
         "typescript": "tsc --noEmit",
         "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
         "dev": "yarn watch 'yarn prepare' ./src",
-        "prepare": "bob build",
         "release": "yarn prepare && dotenv release-it --no-git.requireUpstream",
         "preRelease": "yarn prepare && dotenv release-it --no-git.requireUpstream --preRelease=beta",
         "ios": "yarn --cwd exampleExpo ios",
