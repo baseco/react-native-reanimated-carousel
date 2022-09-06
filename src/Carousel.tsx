@@ -43,7 +43,6 @@ const Carousel = React.forwardRef<ICarouselInstance, TCarouselProps<any>>(
             onSnapToItem,
             onScrollBegin,
             onProgressChange,
-            onOverScroll,
             customAnimation,
             defaultIndex,
         } = props;
@@ -70,7 +69,6 @@ const Carousel = React.forwardRef<ICarouselInstance, TCarouselProps<any>>(
             offsetX,
             rawData,
             onProgressChange,
-            onOverScroll,
         });
 
         const carouselController = useCarouselController({

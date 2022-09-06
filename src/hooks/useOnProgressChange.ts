@@ -12,17 +12,10 @@ export function useOnProgressChange(
         loop: boolean;
         offsetX: Animated.SharedValue<number>;
         rawData: TCarouselProps['data'];
-    } & Pick<TCarouselProps, 'onProgressChange' | 'onOverScroll'>
+    } & Pick<TCarouselProps, 'onProgressChange'>
 ) {
-    const {
-        autoFillData,
-        loop,
-        offsetX,
-        rawData,
-        size,
-        onProgressChange,
-        onOverScroll,
-    } = opts;
+    const { autoFillData, loop, offsetX, rawData, size, onProgressChange } =
+        opts;
 
     const rawDataLength = rawData.length;
 
@@ -38,10 +31,6 @@ export function useOnProgressChange(
             });
 
             if (!loop) {
-                if (value > 0) {
-                    !!onOverScroll && runOnJS(onOverScroll)();
-                }
-
                 value = Math.max(
                     -((rawDataLength - 1) * size),
                     Math.min(value, 0)

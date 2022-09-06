@@ -47,6 +47,7 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
             scrollAnimationDuration,
             withAnimation,
             enabled,
+            onOverScroll,
         },
     } = React.useContext(CTX);
 
@@ -94,6 +95,12 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
             'worklet';
             const origin = translation.value;
             const velocity = scrollEndVelocity.value;
+
+            const location = origin + scrollEndTranslation.value;
+
+            if (location > 300) {
+                !!onOverScroll && runOnJS(onOverScroll)();
+            }
 
             if (
                 Math.abs(scrollEndTranslation.value) < 75 &&
@@ -143,6 +150,7 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
             size,
             scrollEndTranslation.value,
             infinite,
+            onOverScroll,
             _withSpring,
             snapEnabled,
             maxPage,
