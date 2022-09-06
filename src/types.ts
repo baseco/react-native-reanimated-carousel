@@ -182,6 +182,8 @@ export type TCarouselProps<T = any> = {
         offsetProgress: number,
         absoluteProgress: number
     ) => void;
+
+    onOverScroll?: () => void;
 } & (TParallaxModeProps | TStackModeProps);
 
 export interface ICarouselInstance {
