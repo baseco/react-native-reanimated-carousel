@@ -233,12 +233,12 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
             onStart: (_, ctx) => {
                 touching.value = true;
                 ctx.validStart = true;
-                onScrollBegin && runOnJS(onScrollBegin)();
                 ctx.max = (maxPage - 1) * size;
                 ctx.panOffset = translation.value;
             },
             onActive: (e, ctx) => {
                 if (ctx.validStart) {
+                    onScrollBegin && runOnJS(onScrollBegin)();
                     ctx.validStart = false;
                     cancelAnimation(translation);
                 }
@@ -275,9 +275,6 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
                 if (!infinite) {
                     touching.value = false;
                 }
-            },
-            onFail: () => {
-                !!onScrollEnd && runOnJS(onScrollEnd)();
             },
         },
         [
