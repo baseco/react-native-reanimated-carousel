@@ -276,6 +276,9 @@ const IScrollViewGesture: React.FC<Props> = (props) => {
                     touching.value = false;
                 }
             },
+            onFail: () => {
+                !!onScrollEnd && runOnJS(onScrollEnd)();
+            },
         },
         [
             pagingEnabled,
